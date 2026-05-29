@@ -62,7 +62,7 @@ export default function DataIngestion() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedClient) {
+    if (!selectedClient || !selectedClient.id) {
       setError('Please select a client from the sidebar first.');
       return;
     }

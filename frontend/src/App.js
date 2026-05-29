@@ -24,7 +24,10 @@ function App() {
         .then((res) => {
           const clientList = res.data.results || res.data;
           setClients(clientList);
-          if (!selectedClient && (clientList?.[0])) {
+
+          // If current selection is missing/invalid, pick the first available client.
+          const hasValidSelected = selectedClient && selectedClient.id;
+          if (!hasValidSelected && clientList?.[0]) {
             setSelectedClient(clientList[0]);
           }
         })

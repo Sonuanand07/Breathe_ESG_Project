@@ -1,8 +1,9 @@
 # TODO
 
-- [ ] Inspect frontend store/provider wiring to find why `selectedClient` is null on DataIngestion.
-- [ ] Fix client selection persistence/loading after login.
-- [ ] Add UI/logic fallback so ingestion doesn’t fail silently when clients are not loaded.
-- [ ] Rebuild frontend and verify behavior.
-- [ ] If backend endpoints fail, run backend and fix client/data-source endpoints or filters.
+## Plan execution checklist
+- [ ] Inspect current backend routing (done: read backend/config/urls.py)
+- [ ] Implement health endpoint at `/` so Render/Open check doesn’t return 404
+- [ ] Confirm no other URL conflicts
+- [ ] Run backend tests or `python manage.py check` (optional)
+- [ ] (If applicable) redeploy/run Gunicorn and verify `/` returns 200
 
