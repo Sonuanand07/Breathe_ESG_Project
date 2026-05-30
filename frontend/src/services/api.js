@@ -19,6 +19,10 @@ apiClient.interceptors.request.use((config) => {
 });
 
 export const api = {
+  // Authentication
+  login: (credentials) => axios.post(`${API_BASE_URL.replace('/api', '')}/api/auth/login/`, credentials),
+  logout: () => apiClient.post('/auth/logout/'),
+  
   // Clients
   getClients: () => apiClient.get('/clients/'),
   getClient: (id) => apiClient.get(`/clients/${id}/`),
@@ -37,10 +41,19 @@ export const api = {
   flagRecord: (id, data) => apiClient.post(`/records/${id}/flag/`, data),
   getDashboardSummary: (clientId) => apiClient.get('/records/dashboard_summary/', { params: { client: clientId } }),
   
-  // Ingestion
-  ingestSAP: (data) => apiClient.post('/ingestion/ingest-sap/', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  ingestUtility: (data) => apiClient.post('/ingestion/ingest-utility/', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  ingestTravel: (data) => apiClient.post('/ingestion/ingest-travel/', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  // Ingestion - use form data with multipart headers
+  ingestSAP: (data) => {
+    const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+    return apiClient.post('/ingestion/ingest_sap/', data, config);
+  },
+  ingestUtility: (data) => {
+    const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+    return apiClient.post('/ingestion/ingest_utility/', data, config);
+  },
+  ingestTravel: (data) => {
+    const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+    return apiClient.post('/ingestion/ingest_travel/', data, config);
+  },
   
   // Ingestion Jobs
   getIngestionJobs: (params) => apiClient.get('/ingestion-jobs/', { params }),

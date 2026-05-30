@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
+import { api } from '../services/api';
 
 export default function Login() {
   const [email, setEmail] = useState('analyst@breatheesg.com');
@@ -14,13 +15,17 @@ export default function Login() {
     setError('');
 
     try {
-      // In production, this would hit a /api/auth/login/ endpoint
-      // For demo purposes, we'll use a simple token
-      const demoToken = 'demo-token-' + btoa(email);
-      setAuthToken(demoToken);
-      setUser({ email, name: 'Demo Analyst' });
+      // Call the real authentication endpoint
+      const response = await api.login({ email, password });
+      
+      const { token, user } = response.data;
+      setAuthToken(token);
+      setUser(user);
     } catch (err) {
-      setError('Login failed. Please try again.');
+      console.error('Login error:', err);
+      setError(
+        err.response?.data?.error || 'Login failed. Please check your credentials and try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -41,28 +46,34 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
+                id="email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="analyst@breatheesg.com"
+                required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
+                id="password"
+                name="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="••••••••"
+                required
               />
             </div>
 

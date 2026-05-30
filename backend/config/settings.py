@@ -22,6 +22,18 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+# Add common deployment URLs if not explicitly set
+if not DEBUG:
+    # For deployed environments, ensure common Render/Railway hosts are allowed
+    deployment_hosts = [
+        '*.onrender.com',
+        '*.railway.app',
+        '*.fly.dev',
+        '*.herokuapp.com',
+        'breathe-esg-project-9if8.onrender.com',
+    ]
+    ALLOWED_HOSTS.extend([host for host in deployment_hosts if host not in ALLOWED_HOSTS])
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'drf_spectacular',
     'django_filters',
@@ -138,6 +151,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
@@ -148,11 +167,20 @@ REST_FRAMEWORK = {
 }
 
 # CORS Configuration
+# In production, set FRONTEND_URL environment variable
+frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    os.getenv('FRONTEND_URL', 'http://localhost:3000'),
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    frontend_url,
+    # Add deployed frontend URLs
+    "https://breathe-esg-project-ochre.vercel.app",
 ]
+
+# Remove duplicates and None values
+CORS_ALLOWED_ORIGINS = list(set([url for url in CORS_ALLOWED_ORIGINS if url]))
 
 # DRF Spectacular (API Documentation)
 SPECTACULAR_SETTINGS = {

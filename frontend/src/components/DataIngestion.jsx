@@ -154,8 +154,9 @@ export default function DataIngestion() {
                 ].map((source) => (
                   <label key={source.id} className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
                     <input
-                      type="radio"
+                      id={`source-${source.id}`}
                       name="dataSource"
+                      type="radio"
                       value={source.id}
                       checked={dataSource === source.id}
                       onChange={(e) => setDataSource(e.target.value)}
@@ -172,10 +173,12 @@ export default function DataIngestion() {
 
             {/* Data Source Instance Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="dataSourceInstance" className="block text-sm font-medium text-gray-700 mb-2">
                 Select Data Source Instance *
               </label>
               <select
+                id="dataSourceInstance"
+                name="dataSourceInstance"
                 value={selectedDataSourceId}
                 onChange={(e) => setSelectedDataSourceId(e.target.value)}
                 disabled={!selectedClient || !dataSource || filteredDataSources.length === 0 || loading}
@@ -197,20 +200,21 @@ export default function DataIngestion() {
 
             {/* File Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="csvFile" className="block text-sm font-medium text-gray-700 mb-2">
                 Select CSV File *
               </label>
 
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition cursor-pointer">
                 <input
+                  id="csvFile"
+                  name="csvFile"
                   type="file"
                   accept=".csv,.xlsx"
                   onChange={handleFileChange}
                   disabled={loading}
                   className="hidden"
-                  id="fileInput"
                 />
-                <label htmlFor="fileInput" className="cursor-pointer">
+                <label htmlFor="csvFile" className="cursor-pointer">
                   <Upload size={32} className="mx-auto text-gray-400 mb-2" />
                   <p className="text-sm text-gray-600">
                     {file ? file.name : 'Click to select or drag and drop CSV file'}

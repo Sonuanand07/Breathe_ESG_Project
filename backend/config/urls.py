@@ -8,6 +8,7 @@ from rest_framework import permissions
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.core.auth_views import login, logout
 
 def health(request):
     # Used by deployment platforms for basic liveness checks (GET/HEAD /)
@@ -22,6 +23,9 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # Authentication endpoints
+    path('api/auth/login/', login, name='auth-login'),
+    path('api/auth/logout/', logout, name='auth-logout'),
     path('api/', include('apps.core.urls')),
 ]
 
